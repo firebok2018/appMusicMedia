@@ -1,0 +1,59 @@
+package com.example.musicp;
+
+
+import java.util.ArrayList;
+
+import com.example.musicp.*;
+import com.firebok.musicpul.NotNull;
+
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.database.Cursor;
+
+
+public class MainActivity extends Activity {
+	
+	private static final int MY_PERMISSION_REQUEST=1;
+	ArrayList<String> arrayList;
+	ListView listview;
+	ArrayAdapter<String> adapter;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+	}
+	public void getMusic(){
+		ContentResolver contentResolver = getContentResolver();
+		Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		Cursor songCursor =contentResolver.query(songUri, null , null, null, null);
+		
+		if (songCursor != null && ((android.database.Cursor) songCursor).moveToFirst()) {
+			int songTitle = ((android.database.Cursor) songCursor).getColumnIndex(MediaStore.Audio.Media.TITLE);
+			int songArtista = ((android.database.Cursor) songCursor).getColumnIndex(MediaStore.Audio.Media.ARTIST);
+			
+			do {
+				String currentTitle = ((android.database.Cursor) songCursor).getString(songTitle);
+				String currentArtista = ((android.database.Cursor) songCursor).getString(songArtista);
+				arrayList.add(currentTitle + "\n" + currentArtista);
+			} while (((android.database.Cursor) songCursor).moveToNext());
+		}
+	}
+	@Override
+	public <onRequestPermissionsResult> void (int requestCode, @NotNull String[] permissions, @NotNull int [] grantResults){
+		
+		super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+	}
+}
+
+/**
+ * 
+ * https://www.youtube.com/watch?v=aZiRJCWpFhE
+ * /
